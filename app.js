@@ -1,29 +1,25 @@
 window.onload = () => {
     Calc.initialise();
-}
-
-let Calc = {
-
-    data : {
-        result : 0,
-        expression : [],
+  }
+  let Calc = {
+    data : {       
+        result : 0, //     result  prevOperator  currentOperand   currentOperator
         currentOperand : '',
         currentOperator : '',
+        previousOperator : '',
     },
-
     initialise(){
         // Initialsie display to 0
         this.display = document.querySelector('.display');
-        this.display.value = 0 ;
-
         //Binding methods
         this.changeCurrentOperand = this.changeCurrentOperand.bind(this);
         this.changeCurrentOperator = this.changeCurrentOperator.bind(this);
         this.calculate = this.calculate.bind(this);
         this.displayOutput = this.displayOutput.bind(this);
         this.clearAll = this.clearAll.bind(this);
-       // this.onType = this.onType.bind(this);
-
+        this.equals = this.equals.bind(this);
+        this.onType = this.onType.bind(this);
+        this.displayOutput(this.data.result);
         // Selectors for number buttons
         const buttonOne = document.querySelector('.individual[value="1"]');
         const buttonTwo = document.querySelector('.individual[value="2"]');
@@ -36,134 +32,95 @@ let Calc = {
         const buttonNine = document.querySelector('.individual[value="9"]');
         const buttonZero = document.querySelector('.individual[value="0"]');
         const buttonDec = document.querySelector('.individual[value="."]')
-
         // Selectors for operators
         const buttonAdd = document.querySelector('.individual[value="+"]');
         const buttonSub = document.querySelector('.individual[value="-"]');
         const buttonMul = document.querySelector('.individual[value="*"]');
         const buttonDiv = document.querySelector('.individual[value="/"]');
-
         const buttonAC = document.querySelector('.individual[value="AC"]');
         const buttonEquals = document.querySelector('.equal[value="="]');
-
-
         //Adding Listeners
-        buttonOne.addEventListener("click", this.changeCurrentOperand);
-        
-        buttonTwo.addEventListener("click", this.changeCurrentOperand);
-        buttonThree.addEventListener("click", this.changeCurrentOperand);
-        buttonFour.addEventListener("click", this.changeCurrentOperand);
-        buttonFive.addEventListener("click", this.changeCurrentOperand);
-        buttonSix.addEventListener("click", this.changeCurrentOperand);
-        buttonSeven.addEventListener("click", this.changeCurrentOperand);
-        buttonEight.addEventListener("click", this.changeCurrentOperand);
-        buttonNine.addEventListener("click", this.changeCurrentOperand);
-        buttonZero.addEventListener("click", this.changeCurrentOperand);
-        buttonDec.addEventListener("click", this.changeCurrentOperand);
-
-        buttonAdd.addEventListener("click", this.changeCurrentOperator);
-        buttonSub.addEventListener("click", this.changeCurrentOperator);
-        buttonMul.addEventListener("click", this.changeCurrentOperator);
-        buttonDiv.addEventListener("click", this.changeCurrentOperator);
-
-        buttonEquals.addEventListener("click", this.calculate);
-
+        buttonOne.addEventListener("click", (e) => this.changeCurrentOperand(e.target.value));
+        buttonTwo.addEventListener("click", (e) => this.changeCurrentOperand(e.target.value));
+        buttonThree.addEventListener("click", (e) => this.changeCurrentOperand(e.target.value));
+        buttonFour.addEventListener("click", (e) => this.changeCurrentOperand(e.target.value));
+        buttonFive.addEventListener("click", (e) => this.changeCurrentOperand(e.target.value));
+        buttonSix.addEventListener("click", (e) => this.changeCurrentOperand(e.target.value));
+        buttonSeven.addEventListener("click", (e) => this.changeCurrentOperand(e.target.value));
+        buttonEight.addEventListener("click", (e) => this.changeCurrentOperand(e.target.value));
+        buttonNine.addEventListener("click", (e) => this.changeCurrentOperand(e.target.value));
+        buttonZero.addEventListener("click", (e) => this.changeCurrentOperand(e.target.value));
+        buttonDec.addEventListener("click", (e) => this.changeCurrentOperand(e.target.value));
+        buttonAdd.addEventListener("click", (e) => this.changeCurrentOperator(e.target.value));
+        buttonSub.addEventListener("click", (e) => this.changeCurrentOperator(e.target.value));
+        buttonMul.addEventListener("click", (e) => this.changeCurrentOperator(e.target.value));
+        buttonDiv.addEventListener("click", (e) => this.changeCurrentOperator(e.target.value));
+        buttonEquals.addEventListener("click", this.equals);
         buttonAC.addEventListener("click", this.clearAll);
-
-        buttonOne.addEventListener("click", this.displayOutput);
-        buttonTwo.addEventListener("click", this.displayOutput);
-        buttonThree.addEventListener("click", this.displayOutput);
-        buttonFour.addEventListener("click", this.displayOutput);
-        buttonFive.addEventListener("click", this.displayOutput);
-        buttonSix.addEventListener("click", this.displayOutput);
-        buttonSeven.addEventListener("click", this.displayOutput);
-        buttonEight.addEventListener("click", this.displayOutput);
-        buttonNine.addEventListener("click", this.displayOutput);
-        buttonZero.addEventListener("click", this.displayOutput);
-        buttonAdd.addEventListener("click", this.displayOutput);
-        buttonSub.addEventListener("click", this.displayOutput);
-        buttonMul.addEventListener("click", this.displayOutput);
-        buttonDiv.addEventListener("click", this.displayOutput);
-        buttonDec.addEventListener("click", this.displayOutput);
-
-        this.display.addEventListener("keydown", this.onType);
+        this.display.addEventListener("keypress", this.onType);
     },
-
-    // onType(e){
-    //     //console.log(e.key);
-    //     if(!isNaN(e.key)){
-    //         this.changeCurrentOperand(e);
-    //     }
-    //     else if(e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/' ){
-    //         this.changeCurrentOperator(e);
-    //     }
-    // },
-
-    changeCurrentOperand(e){        
-        if(e.target.value === '.'){
-            if(this.data.currentOperand.includes('.')){
-                return;
-            }
+    changeCurrentOperand(operandValue){
+        if(this.data.previousOperator === ''){
+          if(this.data.result.toString().includes('.') && operandValue==='.') return;
+          this.data.currentOperand = '';
+          this.data.result = (this.data.result) ? this.data.result + operandValue : operandValue;
+          this.displayOutput(this.data.result);
         }
-        this.data.currentOperand += e.target.value;
-        //this.displayOutput(this.data.currentOperand, 'changeCurrentOperator');
+        else {
+          if(this.data.currentOperand.toString().includes('.') && operandValue==='.') return;
+          this.data.currentOperand += operandValue;   
+          this.displayOutput(this.data.currentOperand);
+        }
     },
-
-    changeCurrentOperator(e){        
-        this.data.currentOperator = e.target.value;
-        if(!this.data.currentOperand == ''){
-            this.data.expression.push(this.data.currentOperand);
-            this.data.currentOperand = '';
-        }  
-        if(['+', '-', '*', '/'].includes(this.data.expression[this.data.expression.length - 1])){
-          return;
-        } 
-        this.data.expression.push(this.data.currentOperator); 
-        
-        //this.displayOutput(this.data.changeCurrentOperator, 'changeCurrentOperator');
+    changeCurrentOperator(operatorValue){
+      if(this.data.previousOperator === ''){
+        this.data.previousOperator = operatorValue;
+      }
+      else {
+        this.calculate();
+        this.data.previousOperator = operatorValue;
+        this.displayOutput(this.data.result);
+      }
     },
-
     clearAll(){
-        this.display.value = 0;
+        this.data.result = 0;
         this.data.currentOperand = '';
         this.data.currentOperator = '';
-        this.data.expression = [];
+        this.data.previousOperator = '';
+        this.displayOutput(this.data.result);
     },
-
     calculate(){
-        this.data.expression.push(this.data.currentOperand);
+        this.data.result = this.useOperator(this.data.result, this.data.currentOperand, this.data.previousOperator);
         this.data.currentOperand = '';
-        let res = 0;
-        if(this.data.expression.length === 1){
-            res = +this.data.expression[0];
-        }        
-        let operand1 = +this.data.expression[0];
-
-        for(let i=1; i <= this.data.expression.length-2; i+=2){ 
-            operand2 = this.data.expression[i+1];
-            operator = this.data.expression[i];
-            res = this.useOperator(+operand1, +operand2, operator);
-            operand1 = res;
-        }
-        console.log(res);  
-        this.data.expression = []; 
-        this.display.value = res;
     },
-
-    useOperator(a,b,op){ 
-        switch(op){ 
-            case '+': return a + b; 
-            case '-': return a - b; 
-            case '*': return a * b; 
-            case '/': return a / b;
-        } 
-      },
-
-    displayOutput(e){
-        if(this.display.value === '0'){
-            this.display.value = '';
+    useOperator(operand1, operand2, operator){
+        switch(operator){
+            case '+': return +operand1 + +operand2;
+            case '-': return +operand1 - +operand2;
+            case '*': return +operand1 * +operand2;
+            case '/': return +operand1 / +operand2;
         }
-        this.display.value += e.target.value;
-    }
-}
-
+    },
+    displayOutput(value){
+        this.display.value = value;
+    },
+    equals(){
+        if(this.data.currentOperand) this.calculate();
+        this.displayOutput(this.data.result);
+    },
+    onType(e){
+        e.preventDefault();
+        const keyValue = e.key;
+        if(!isNaN(keyValue) || keyValue==='.'){
+            this.changeCurrentOperand(keyValue);
+        }
+        else if(keyValue === '+' || keyValue === '-' || keyValue === '*' || keyValue === '/' ){
+            this.changeCurrentOperator(keyValue);
+            const currOutput = this.display.value + keyValue;
+            this.displayOutput(currOutput);
+        }
+        else if(keyValue === 'Enter')
+          this.equals();
+        return;
+    },
+  }  
