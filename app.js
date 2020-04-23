@@ -1,13 +1,27 @@
 class CalculatorFrame{
     constructor(){
-        this.data = new Store({
+        this.store = new Store({
             result : 0,
             operand : '',
             operator : '',
         });
         
-        let keypad = new Keypad(this.data);        
-        let display = new Display(this.data);
+        this.keypad = new Keypad(this.store, this.calculate);        
+        this.display = new Display();
+    }
+
+    useOperator(operand1, operand2, operator){
+        switch(operator){
+            case '+': return +operand1 + +operand2;
+            case '-': return +operand1 - +operand2;
+            case '*': return +operand1 * +operand2;
+            case '/': return +operand1 / +operand2;
+        }
+    }
+
+    calculate = (store) => {
+        store.setState({result : this.useOperator(store.getState().result, store.getState().operand, store.getState().operator)});
+        store.setState({operand : ''});
     }
 }
 
@@ -49,88 +63,68 @@ class Store{
 }
 
 class Display{
-    constructor(data){
+    constructor(){
         this.display = document.querySelector('.display');
         this.displayOutput = this.displayOutput.bind(this);
         PubSub.subscribe("StateChange", this.displayOutput);
     }
 
-    displayOutput(data, printThis){
-       // debugger;
+    displayOutput(store, printThis){
         if(printThis === 'result')
-            this.display.value = data.result;
+            this.display.value = store.result;
         else
-            this.display.value = data.operand;
+            this.display.value = store.operand;
     }
 }
 
 class Keypad{
-    constructor(data){
-       // console.log(data.getState().result);
-        this.digitButtons = [
-          new DigitButton("0", (e) => this.handleDigitButtonClick("0", data)),
-          new DigitButton("1", (e) => this.handleDigitButtonClick("1", data)),
-          new DigitButton("2", (e) => this.handleDigitButtonClick("2",data)),
-          new DigitButton("3", (e) => this.handleDigitButtonClick("3", data)),
-          new DigitButton("4", (e) => this.handleDigitButtonClick("4", data)),
-          new DigitButton("5", (e) => this.handleDigitButtonClick("5", data)),
-          new DigitButton("6", (e) => this.handleDigitButtonClick("6", data)),
-          new DigitButton("7", (e) => this.handleDigitButtonClick("7", data)),
-          new DigitButton("8", (e) => this.handleDigitButtonClick("8", data)),
-          new DigitButton("9", (e) => this.handleDigitButtonClick("9", data)),
-          new DigitButton(".", (e) => this.handleDigitButtonClick(".", data))];
+    constructor(store, calculate){
 
-        this.operationButtons = {
-            "+" : new OperationButton("+", (e) => this.handleOperationButtonClick("+", data)),
-            "-" : new OperationButton("-", (e) => this.handleOperationButtonClick("-", data)),
-            "*" : new OperationButton("*", (e) => this.handleOperationButtonClick("*", data)),
-            "/" : new OperationButton("/", (e) => this.handleOperationButtonClick("/", data)),
-            "=" : new OperationButton("=", (e) => this.handleOperationButtonClick("=", data)),
-            "AC" : new OperationButton("AC", (e) => this.handleOperationButtonClick("AC", data)),
-        }
+        this.calculate = calculate;
+
+        const digitButtonsList = [...Array.from(Array(10).keys()), '.'];
+        this.digitButtons = digitButtonsList.map(buttonKey => new DigitButton(buttonKey.toString(), () => this.handleDigitButtonClick(buttonKey.toString(), store)));
+
+        const operationButtonsList = ["+", "-", "*", "/", "=", "AC"];
+        this.operationButtons = operationButtonsList.reduce((acc, item) => (
+            {
+                ...acc,
+                [item] : new OperationButton(item, () => this.handleOperationButtonClick(item, store)),
+            } 
+        ) ,
+         {});
     }
 
-    handleDigitButtonClick(operandValue, data){
-        if(data.getState().operator === ""){
-            if(data.getState().result.toString().includes('.') && operandValue === '.') return;
-            data.setState({operand : ''});
-            data.setState({result : ((data.getState().result) ? data.getState().result + operandValue : operandValue)}, "result");
-           // this.displayOutput(this.data.result);
+    handleDigitButtonClick(operandValue, store){
+        if(store.getState().operator === ""){
+            if(store.getState().result.toString().includes('.') && operandValue === '.') return;
+            store.setState({operand : ''});
+            store.setState({result : ((store.getState().result) ? store.getState().result + operandValue : operandValue)}, "result");
         }
         else{
-            if(data.getState().operand.toString().includes('.') && operandValue==='.') return;
-            data.setState({operand : data.getState().operand + operandValue}, "operand");
-            // this.displayOutput(this.data.operand);
+            if(store.getState().operand.toString().includes('.') && operandValue==='.') return;
+            store.setState({operand : store.getState().operand + operandValue}, "operand");
         }
     }
 
-    handleOperationButtonClick(operatorValue, data){
-        if(data.getState().operator === ''){
-            data.setState({operator : operatorValue});
+    handleOperationButtonClick(operatorValue, store){
+        if(operatorValue === '='){
+            if(store.getState().operand){
+                this.calculate(store);
+            }
+            store.setState({}, "result");
+            return;
+        }
+        if(operatorValue === 'AC'){
+            store.setState({result : 0, operand : '', operator : ''}, "result");
+            return;
+        }
+        if(store.getState().operator === ''){
+            store.setState({operator : operatorValue});
         }
         else{
-            this.calculate(data);
-            data.setState({operator : operatorValue}, "result");
-           // this.displayOutput(this.data.result);
-        }
-    }
-
-    calculate(data){
-        // const decDigitsInResult = this.data.result.toString().substring(this.data.result.toString().indexOf('.') + 1).length;
-        // const decDigitsInCurrentOperand = this.data.currentOperand.toString().substring(this.data.currentOperand.toString().indexOf('.') + 1).length;
-        // const precision = decDigitsInResult > decDigitsInCurrentOperand ? decDigitsInResult : decDigitsInCurrentOperand;
-        data.setState({result : this.useOperator(data.getState().result, data.getState().operand, data.getState().operator)});  
-        // this.data.result = +this.data.result.toFixed(precision);
-        data.setState({operand : ''});
-        console.log(data.getState());
-    }
-
-    useOperator(operand1, operand2, operator){
-        switch(operator){
-            case '+': return +operand1 + +operand2;
-            case '-': return +operand1 - +operand2;
-            case '*': return +operand1 * +operand2;
-            case '/': return +operand1 / +operand2;
+            this.calculate(store);
+            store.setState({operator : operatorValue}, "result");
         }
     }
 }
