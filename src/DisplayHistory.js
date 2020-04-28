@@ -6,7 +6,6 @@ export class DisplayHistory{
         this.displayHistory = document.querySelector('.displayHistory');
         this.displayOutput = this.displayOutput.bind(this);
         PubSub.subscribe("ExpressionUpdated", this.displayOutput);
-        this.displayHistory.addEventListener("keypress", (e) => this.onType(e, store, keypad));
     }
 
     displayOutput(store, printThis){

@@ -12,16 +12,16 @@ export class Display{
     onType(e, store, keypad){
         e.preventDefault();
         const keyValue = e.key;
-        if(!isNaN(keyValue) || keyValue==='.'){
+        if(!isNaN(keyValue) || keyValue === '.'){
             keypad.handleDigitButtonClick(keyValue, store);
         }
         else if(keyValue === '+' || keyValue === '-' || keyValue === '*' || keyValue === '/' ){
             keypad.handleOperationButtonClick(keyValue, store);
         }
-        else if(keyValue === 'Enter')
-          keypad.handleOperationButtonClick("=", store);
+        else if(keyValue === 'Enter'){
+            keypad.handleOperationButtonClick("=", store);
+        }
         return;
-
     }
 
     displayOutput(store, printThis){

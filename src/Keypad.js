@@ -32,16 +32,19 @@ export class Keypad{
         
     }
 
-    handleOperationButtonClick(operatorValue, store){
-        
-        if(operatorValue === '='){
+    handleOperationButtonClick(operatorValue, store){        
+        if(operatorValue === '='){            
             if(store.getState().operand){
+                const {expression} = store.getState();                
                 this.calculate(store);
+                store.setState({expression : [], operand : '', operator : ''}, "expression");
             }
             store.setState({}, "result");
             return;
         }
         if(operatorValue === 'AC'){
+            const {expression} = store.getState();
+            store.setState({expression : []}, "expression");
             store.setState({result : 0, operand : '', operator : ''}, "result");
             return;
         }
