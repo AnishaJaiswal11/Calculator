@@ -6,7 +6,7 @@ export class Display{
         this.display = document.querySelector('.display');
         this.displayOutput = this.displayOutput.bind(this);
         PubSub.subscribe("StateChange", this.displayOutput);
-        this.display.addEventListener("keypress", (e) => this.onType(e, store, keypad));
+        this.display.addEventListener("keydown", (e) => this.onType(e, store, keypad));
     }
 
     onType(e, store, keypad){
