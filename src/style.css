@@ -58,11 +58,18 @@ input::-webkit-inner-spin-button {
     background-color: darkslategrey;
     color: gainsboro;
 }
-.AC{
+.ACDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ACButton{
     background-color: yellow;
     color: black;
-    border-style: none;
+    border: none;
     border-radius: 50%;
+    height : 70%;
+    width: 70%;
 }
 .operation{
     background-color: dodgerblue;
