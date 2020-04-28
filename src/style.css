@@ -34,6 +34,7 @@ body{
     color:darkgray;
     border-style: none;
     pointer-events: none;
+    direction: rtl;
 }
 .equal{
     background-color: #c0b9d0;
@@ -77,5 +78,11 @@ input::-webkit-inner-spin-button {
 }
 .keypad{
     background-color: darkslategrey;
+}
+button:focus{
+    outline: none;
+}
+input:focus{
+    outline: none;
 }
 

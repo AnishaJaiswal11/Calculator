@@ -21,5 +21,6 @@ export class Store{
         if(printThis === 'expression'){
             PubSub.publish("ExpressionUpdated", this.state, "expression");
         }
+        document.querySelector('.display').focus();
     }
 }
