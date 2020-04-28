@@ -10,7 +10,7 @@ export class Display{
     }
 
     onType(e, store, keypad){
-        e.preventDefault();
+        e.preventDefault();        
         const keyValue = e.key;
         if(!isNaN(keyValue) || keyValue === '.'){
             keypad.handleDigitButtonClick(keyValue, store);

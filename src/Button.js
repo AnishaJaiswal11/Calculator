@@ -4,7 +4,8 @@ export class Button{
             this.button = document.querySelector(`.equal[value= "${value}" ]`);
         }
         else{
-            this.button = document.querySelector(`.individual[value= "${value}" ]`);
+            const buttonClass = value === 'AC' ? 'ACButton' : 'individual';
+            this.button = document.querySelector(`.${buttonClass}[value= "${value}" ]`);
         }        
         this.attachEventListener(handler);
     }
