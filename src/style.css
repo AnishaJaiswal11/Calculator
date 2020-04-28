@@ -33,6 +33,7 @@ body{
     padding: 10px 8px;
     color:darkgray;
     border-style: none;
+    pointer-events: none;
 }
 .equal{
     background-color: #c0b9d0;
