@@ -1,3 +1,4 @@
+import css from './style.css';
 import {Store} from "./Store.js";
 import {Keypad} from "./Keypad.js";
 import {Display} from "./Display.js";
@@ -32,5 +33,11 @@ class CalculatorFrame{
     }
 }
 window.onload = () => {
+    // const head = document.getElementsByTagName('head')[0];
+    // const link = document.createElement('link'); 
+    // link.rel  = 'stylesheet';
+    // link.type = 'text/css';
+    // link.href = '../src/style.css';
+    // head.appendChild(link);
     let calc1 = new CalculatorFrame();
 }

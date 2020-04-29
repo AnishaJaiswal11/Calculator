@@ -1,5 +1,3 @@
-//const path = require('path');
-
 module.exports = {
   mode: 'development',
   entry: './src/app.js',
@@ -21,6 +19,17 @@ module.exports = {
                 presets: ['@babel/preset-env', '@babel/preset-react'],
                 plugins: ['@babel/plugin-proposal-class-properties'],
               },
+          },
+        ],
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
           },
         ],
       },
